@@ -22,6 +22,14 @@ const api = {
     } catch (err) {
       console.log(err)
     }
+  },
+  async getCurrentPrice() {
+    try {
+      const res = await axios.get('https://index-api.bitcoin.com/api/v0/cash/price/usd', headers)
+      return res
+    } catch (err){
+      console.log(err)
+    }
   }
 }
 

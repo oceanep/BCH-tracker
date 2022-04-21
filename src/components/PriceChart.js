@@ -11,7 +11,7 @@ import {
 
 import { useBchPriceState } from '../redux/useBchPrice'
 
-const PriceChart = () => {
+const PriceChart = ({glow}) => {
   const { month_prices, week_prices, day_prices, loading, error } = useBchPriceState()
 
   const [displayPrices, setDisplayPrices] = useState(month_prices)
@@ -28,13 +28,13 @@ const PriceChart = () => {
   }, [month_prices, week_prices, day_prices, setDisplayPrices])
 
   return (
-    <div className="chart-container">
+    <div className="chart-container" style={{ boxShadow: glow ? ' 0px 0px 25px 5px rgba(249,75,72,0.4)' : ''}}>
       {
         !loading ?
-          <ResponsiveContainer width="100%" height={500}>
+          <ResponsiveContainer width="99%" height={250}>
             <AreaChart
-              width={500}
-              height={300}
+              width='99%'
+              height={250}
               data={displayPrices}
               margin={{
                 top: 5,
@@ -43,23 +43,25 @@ const PriceChart = () => {
                 bottom: 5,
               }}
             >
-              <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis tickFormatter={(value) => `$${value}`} domain={[0,500]} />
               <Tooltip formatter={(value, name) => [`$${value}`, 'USD']} />
-              <Area type="monotone" dataKey="usd" stroke="#8884d8" fill="#8884d8" />
+              <Area type="monotone" label="date" dataKey="usd" stroke="#4d4d4d" fill="#141414" />
             </AreaChart>
           </ResponsiveContainer>
         :
           null
       }
-      <div>
-        <button onClick={() => timeframeClick(month_prices)}>Month</button>
-        <button onClick={() => timeframeClick(week_prices)}>Week</button>
-        <button onClick={() => timeframeClick(day_prices)}>Day</button>
+      <div className='buttons-container'>
+        <button className='chart-button' onClick={() => timeframeClick(month_prices)}>Month</button>
+        <button className='chart-button' onClick={() => timeframeClick(week_prices)}>Week</button>
+        <button className='chart-button' onClick={() => timeframeClick(day_prices)}>Day</button>
       </div>
     </div>
   )
 }
 
+PriceChart.defaultProps = {
+  glow: false
+}
 export default PriceChart

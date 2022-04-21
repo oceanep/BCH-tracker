@@ -1,21 +1,25 @@
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
 
 import UseBchNewsProvider from './redux/useBchNews'
 import UseBchPriceProvider from './redux/useBchPrice'
 
 import NewsFeed from './components/NewsFeed'
 import PriceChart from './components/PriceChart'
+import BchPrice from './components/BchPrice'
 
 function App() {
   return (
-    <div className="App">
-      <UseBchNewsProvider>
-        <NewsFeed/>
-      </UseBchNewsProvider>
+    <div className="App-container">
       <UseBchPriceProvider>
-        <PriceChart/>
+        <div className="container">
+          <BchPrice glow/>
+          <PriceChart glow/>
+        </div>
       </UseBchPriceProvider>
+      <UseBchNewsProvider>
+        <NewsFeed glow/>
+      </UseBchNewsProvider>
     </div>
   );
 }
