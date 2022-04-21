@@ -1,12 +1,11 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
 import { useBchNewsState } from '../redux/useBchNews'
 
 const NewsFeed = ({glow}) => {
-  const { news, loading, error } = useBchNewsState()
+  const { news, loading } = useBchNewsState()
 
-  const regex1 = useMemo(() => /(%20)/)
-  const regex2 = useMemo(() => /(&#\d*)/)
+
 
   const htmlDecode = (input, element) => {
     let e = document.createElement(element);
@@ -15,8 +14,10 @@ const NewsFeed = ({glow}) => {
   }
 
   const regexCheck = useCallback((string) => {
+    const regex1 = /(%20)/
+    const regex2 = /(&#\d*)/
     return regex1.test(string) || regex2.test(string)
-  }, [regex1, regex2])
+  }, [])
 
   const renderArticle = useCallback(() => {
     return (
@@ -28,7 +29,7 @@ const NewsFeed = ({glow}) => {
         const link = item.children[1]['value']
         const author = item.children[2]['value'].split('>')[0]
         const date = item.children[3]['value'].split('+')[0]
-        const thumbnail_obj = item.children.find( child => child.name == 'bnmedia:post-thumbnail')
+        const thumbnail_obj = item.children.find( child => child.name === 'bnmedia:post-thumbnail')
         const thumbnail = thumbnail_obj?.children[0]['value'] || ''
         const img_style = {
           backgroundImage: `url(${thumbnail})`
@@ -41,13 +42,13 @@ const NewsFeed = ({glow}) => {
               <div className='article-field'><strong>{title}</strong></div>
               <div className='article-field'>{author}</div>
               <div className='article-field'>{date}</div>
-              <div className='article-field'><a href={link} target="_blank" >Full Article</a></div>
+              <div className='article-field'><a href={link} target="_blank" rel="noreferrer">Full Article</a></div>
             </div>
           </div>
         )
       })
     )
-  }, [news])
+  }, [news, regexCheck])
 
   return (
     <div className="feed-container" style={{ boxShadow: glow ? ' 0px 0px 25px 5px rgba(249,75,72,0.4)' : ''}}>

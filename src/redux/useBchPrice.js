@@ -78,7 +78,7 @@ function UseBchPriceProvider ({children}) {
       console.log(err)
       dispatch({ payload: 'Cannot Fetch Prices', type: ACTIONS.ERROR })
     }
-  }, [])
+  }, [monthDays])
 
   const getCurrentPrice = useCallback( async () => {
     try {

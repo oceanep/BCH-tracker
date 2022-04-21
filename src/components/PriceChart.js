@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import {
   ResponsiveContainer,
   AreaChart,
-  CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
@@ -12,20 +11,17 @@ import {
 import { useBchPriceState } from '../redux/useBchPrice'
 
 const PriceChart = ({glow}) => {
-  const { month_prices, week_prices, day_prices, loading, error } = useBchPriceState()
+  const { month_prices, week_prices, day_prices, loading } = useBchPriceState()
 
-  const [displayPrices, setDisplayPrices] = useState(month_prices)
+  const [displayPrices, setDisplayPrices] = useState([])
 
   useEffect(() => {
-    console.log('month prices: ', month_prices)
-    console.log('week prices: ', week_prices)
-    console.log('day prices: ', day_prices)
-    if (!displayPrices.length > 0) setDisplayPrices(month_prices)
-  }, [month_prices, week_prices, day_prices])
+    if (!loading) setDisplayPrices(month_prices)
+  }, [month_prices, loading])
 
   const timeframeClick = useCallback((time_frame) => {
     setDisplayPrices(time_frame)
-  }, [month_prices, week_prices, day_prices, setDisplayPrices])
+  }, [setDisplayPrices])
 
   return (
     <div className="chart-container" style={{ boxShadow: glow ? ' 0px 0px 25px 5px rgba(249,75,72,0.4)' : ''}}>

@@ -57,7 +57,7 @@ function UseBchNewsProvider ({children}) {
       console.log(err)
       dispatch({ payload: 'Cannot Fetch News', type: ACTIONS.ERROR })
     }
-  }, [])
+  }, [parseXML])
 
   useEffect(() => {
     getNews()

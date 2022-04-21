@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useBchPriceState, useBchPriceDispatch } from '../redux/useBchPrice'
 
 const BchPrice = ({glow}) => {
-  const { current_price, loading, error } = useBchPriceState()
+  const { current_price } = useBchPriceState()
   const { getCurrentPrice } = useBchPriceDispatch()
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const BchPrice = ({glow}) => {
       <div className='price-label'>Current BCH Price</div>
       <div className='price'><strong>
       {
-        current_price != '' ?
+        current_price !== '' ?
           `$${parseFloat(current_price/100).toFixed(2)}`
 
         :
