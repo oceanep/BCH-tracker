@@ -1,5 +1,5 @@
 import { useReducer, createContext, useContext, useCallback, useEffect } from 'react'
-import XMLParser from 'react-xml-parser'
+import { XMLParser } from 'fast-xml-parser'
 
 import api from './utils.js'
 
@@ -39,19 +39,19 @@ function UseBchNewsProvider ({children}) {
 
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const parseXML = useCallback( (input) => {
+  const parseXML = useCallback( async (input) => {
     const parser = new XMLParser()
-    const xml = parser.parseFromString(input)
-    const articles = xml.getElementsByTagName('item').slice(0, 4)
-    console.log('articles xml: ', articles)
-    return articles
+    const xml = parser.parse(input)
+    // const articles = xml.getElementsByTagName('item').slice(0, 4)
+    return xml.rss.channel.item.slice(0,4)
   }, [])
 
   const getNews = useCallback( async () => {
     dispatch({type: ACTIONS.LOADING})
     try {
       const res = await api.getNews()
-      const newNews = parseXML(res.data)
+      const newNews = await parseXML(res.data)
+      console.log('newNews: ', newNews)
       dispatch({ payload: newNews, type: ACTIONS.FETCHED })
     } catch (err){
       console.log(err)

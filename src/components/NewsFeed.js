@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { useBchNewsState } from '../redux/useBchNews'
 
 const NewsFeed = ({glow}) => {
-  const { news, loading } = useBchNewsState()
+  const { news, loading, error } = useBchNewsState()
 
 
 
@@ -14,23 +14,24 @@ const NewsFeed = ({glow}) => {
   }
 
   const regexCheck = useCallback((string) => {
+    console.log('checking news feed: ', string)
     const regex1 = /(%20)/
     const regex2 = /(&#\d*)/
     return regex1.test(string) || regex2.test(string)
   }, [])
 
   const renderArticle = useCallback(() => {
+    console.log('full news feed: ', news)
     return (
       news.map( (item, i) => {
         //RSS feed titles come in inconsistently, some require multiple decodes
         //This will break ones that come in as normal strings
         //regex check before deciding how to handle
-        const title = regexCheck(item.children[0]['value']) ? htmlDecode(decodeURIComponent(item.children[0]['value']), 'span') : item.children[0]['value']
-        const link = item.children[1]['value']
-        const author = item.children[2]['value'].split('>')[0]
-        const date = item.children[3]['value'].split('+')[0]
-        const thumbnail_obj = item.children.find( child => child.name === 'bnmedia:post-thumbnail')
-        const thumbnail = thumbnail_obj?.children[0]['value'] || ''
+        const title = regexCheck(item.title) ? htmlDecode(decodeURIComponent(item.title), 'span') : item.title
+        const link = item.link
+        const author = item['dc:creator']
+        const date = item.pubDate.split('+')[0]
+        const thumbnail = item['bnmedia:post-thumbnail']['bnmedia:url']
         const img_style = {
           backgroundImage: `url(${thumbnail})`
         }
@@ -59,6 +60,12 @@ const NewsFeed = ({glow}) => {
             renderArticle()
           :
             null
+        }
+        {
+          !error ?
+            null
+          :
+            <span>Error Loading Article Feed</span>
         }
       </div>
       <div className="feed-footer"/>
